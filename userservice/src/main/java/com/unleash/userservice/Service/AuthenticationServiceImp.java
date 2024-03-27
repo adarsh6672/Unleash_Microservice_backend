@@ -3,6 +3,7 @@ package com.unleash.userservice.Service;
 
 
 
+import com.unleash.userservice.DTO.UserDto;
 import com.unleash.userservice.Model.AuthenticationResponse;
 import com.unleash.userservice.Model.User;
 import com.unleash.userservice.Reposetory.UserRepository;
@@ -34,24 +35,23 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse register(User request){
+    public AuthenticationResponse register(UserDto request){
         User user= new User();
-        user.setPhone(request.getPhone());
-        user.setFullname((request.getFullname()));
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        try{
+            user.setPhone(request.getPhone());
+            user.setFullname((request.getFullname()));
+            user.setEmail(request.getEmail());
+            user.setUsername(request.getUsername());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(request.getRole());
+            user= repository.save(user);
+        }catch (Exception e){
+            System.out.println(e.getStackTrace());
+        }
 
-        user.setRole(request.getRole());
-
-        user= repository.save(user);
 
         String token = jwtService.generateToken(user);
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("hello");
-        mailMessage.setText("this is test mail from the unleash");
-        emailServiceImp.sendEmail(mailMessage);
+
 
         return  new AuthenticationResponse(token , String.valueOf(request.getRole()));
     }
@@ -74,5 +74,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
 
         return new AuthenticationResponse(token , role);
+    }
+
+    @Override
+    public boolean isEmailExisting(String email){
+        return repository.existsByEmail(email);
     }
 }
