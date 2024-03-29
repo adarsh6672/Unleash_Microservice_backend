@@ -7,5 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OtpDto {
 
+    private String email;
     private String otp;
+    private String password;
 }

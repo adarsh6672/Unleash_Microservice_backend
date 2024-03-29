@@ -3,13 +3,12 @@ package com.unleash.userservice.Service;
 
 
 
-import com.unleash.userservice.DTO.UserDto;
+import com.unleash.userservice.DTO.OtpDto;
 import com.unleash.userservice.Model.AuthenticationResponse;
 import com.unleash.userservice.Model.User;
 import com.unleash.userservice.Reposetory.UserRepository;
 import com.unleash.userservice.Service.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,13 +34,13 @@ public class AuthenticationServiceImp implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse register(UserDto request){
+    public AuthenticationResponse register(User request){
         User user= new User();
         try{
             user.setPhone(request.getPhone());
             user.setFullname((request.getFullname()));
             user.setEmail(request.getEmail());
-            user.setUsername(request.getUsername());
+            user.setUsername(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(request.getRole());
             user= repository.save(user);
@@ -79,5 +78,19 @@ public class AuthenticationServiceImp implements AuthenticationService {
     @Override
     public boolean isEmailExisting(String email){
         return repository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean updatePassword(OtpDto dto){
+        try{
+            User user = repository.findByEmail(dto.getEmail()).orElseThrow();
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            repository.save(user);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }
