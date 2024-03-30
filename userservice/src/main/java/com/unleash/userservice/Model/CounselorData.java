@@ -33,7 +33,7 @@ public class CounselorData {
     @ManyToMany
     @JoinTable(
             name = "user_language",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "counselor_data_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id")
     )
     private Set<Language> languages = new HashSet<>();
@@ -45,6 +45,13 @@ public class CounselorData {
     private String qualificationProof;
 
     private String experienceProof;
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    private Gender gender;
+
+    private int yoe;
+
 
     private LocalDateTime uploadedOn;
 
