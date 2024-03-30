@@ -1,8 +1,7 @@
 package com.unleash.userservice.Service.services;
 
 import com.unleash.userservice.DTO.OtpDto;
-import com.unleash.userservice.DTO.UserDto;
-import com.unleash.userservice.Model.AuthenticationResponse;
+import com.unleash.userservice.DTO.AuthenticationResponse;
 import com.unleash.userservice.Model.User;
 
 public interface AuthenticationService {

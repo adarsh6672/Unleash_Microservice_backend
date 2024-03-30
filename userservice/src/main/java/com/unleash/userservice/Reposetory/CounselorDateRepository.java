@@ -1,0 +1,11 @@
+package com.unleash.userservice.Reposetory;
+
+import com.unleash.userservice.Model.CounselorData;
+import com.unleash.userservice.Model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface CounselorDateRepository extends JpaRepository<CounselorData , Integer> {
+    Optional<CounselorData> findByUser(User user);
+}

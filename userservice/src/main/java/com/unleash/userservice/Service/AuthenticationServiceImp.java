@@ -4,8 +4,11 @@ package com.unleash.userservice.Service;
 
 
 import com.unleash.userservice.DTO.OtpDto;
-import com.unleash.userservice.Model.AuthenticationResponse;
+import com.unleash.userservice.DTO.AuthenticationResponse;
+import com.unleash.userservice.Model.CounselorData;
+import com.unleash.userservice.Model.Role;
 import com.unleash.userservice.Model.User;
+import com.unleash.userservice.Reposetory.CounselorDateRepository;
 import com.unleash.userservice.Reposetory.UserRepository;
 import com.unleash.userservice.Service.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Service;
 public class AuthenticationServiceImp implements AuthenticationService {
 
     private  final UserRepository repository;
+
+    private final CounselorDateRepository counselorDateRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtServiceImp jwtService;
 
@@ -25,8 +30,9 @@ public class AuthenticationServiceImp implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationServiceImp(UserRepository repository, PasswordEncoder passwordEncoder, JwtServiceImp jwtService, EmailServiceImp emailServiceImp, AuthenticationManager authenticationManager) {
+    public AuthenticationServiceImp(UserRepository repository, CounselorDateRepository counselorDateRepository, PasswordEncoder passwordEncoder, JwtServiceImp jwtService, EmailServiceImp emailServiceImp, AuthenticationManager authenticationManager) {
         this.repository = repository;
+        this.counselorDateRepository = counselorDateRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.emailServiceImp = emailServiceImp;
@@ -44,6 +50,10 @@ public class AuthenticationServiceImp implements AuthenticationService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(request.getRole());
             user= repository.save(user);
+            if(user.getRole().equals(Role.COUNSELOR)){
+                CounselorData data= new CounselorData(user);
+                counselorDateRepository.save(data);
+            }
         }catch (Exception e){
             System.out.println(e.getStackTrace());
         }
@@ -51,8 +61,15 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
         String token = jwtService.generateToken(user);
 
+        AuthenticationResponse response= new AuthenticationResponse(token , String.valueOf(request.getRole()));
+        if(user.getRole().equals(Role.COUNSELOR)){
+           CounselorData counselorData= counselorDateRepository.findByUser(user).orElseThrow();
+           if(!counselorData.isVerified()){
+               response.setRole("Unverified");
+           }
 
-        return  new AuthenticationResponse(token , String.valueOf(request.getRole()));
+        }
+        return  response;
     }
 
     @Override
@@ -71,8 +88,15 @@ public class AuthenticationServiceImp implements AuthenticationService {
 
         String token = jwtService.generateToken(user);
 
+        AuthenticationResponse response= new AuthenticationResponse(token , String.valueOf(user.getRole()));
+        if(user.getRole().equals(Role.COUNSELOR)){
+            CounselorData counselorData= counselorDateRepository.findByUser(user).orElseThrow();
+            if(!counselorData.isVerified()){
+                response.setRole("Unverified");
+            }
 
-        return new AuthenticationResponse(token , role);
+        }
+        return response;
     }
 
     @Override

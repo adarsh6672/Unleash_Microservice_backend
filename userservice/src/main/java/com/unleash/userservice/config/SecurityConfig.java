@@ -3,6 +3,7 @@ package com.unleash.userservice.config;
 
 import  com.unleash.userservice.Service.UserDetailsServiceImp;
 import com.unleash.userservice.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final JwtAuthenticationFilter jwtauthenticationFilter;
 
+    @Autowired
     public SecurityConfig(UserDetailsServiceImp userDetailsServiceImp, JwtAuthenticationFilter authenticationFilter, JwtAuthenticationFilter jwtauthenticationFilter) {
         this.userDetailsServiceImp = userDetailsServiceImp;
         this.jwtauthenticationFilter = jwtauthenticationFilter;
@@ -41,6 +43,8 @@ public class SecurityConfig {
                         req ->req.requestMatchers("/login/**","/register/**","/otp/**","password/**")
                                 .permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers("/counselor/**").hasAuthority("COUNSELOR")
+                                .requestMatchers("/user/**").hasAuthority("USER")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(userDetailsServiceImp)

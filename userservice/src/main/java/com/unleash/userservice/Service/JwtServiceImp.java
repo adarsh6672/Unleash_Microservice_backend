@@ -18,13 +18,13 @@ import java.util.function.Function;
 @Service
 public class JwtServiceImp implements JwtService {
 
-    private  String SECRET_KEY ;
+    private final String SECRET_KEY ="9210a0e16daf5f651d1a6d233e6426a569237c5eb2d0bc63c6cb19f7cebb1a10";
 
 
 
-    public JwtServiceImp(@Value("${jwt.secret.key}") String secretKey) {
+    /*public JwtServiceImp(@Value("${jwt.secret.key}") String secretKey) {
         SECRET_KEY = secretKey;
-    }
+    }*/
 
     @Override
     public  String extractUsername(String token){
@@ -72,14 +72,13 @@ public class JwtServiceImp implements JwtService {
                 .expiration(new Date(System.currentTimeMillis()+ 24*60*60*1000))
                 .signWith(getSigninKey())
                 .compact();
-
+        System.out.println(token);
         return  token;
     }
 
     @Override
     public SecretKey getSigninKey(){
         byte[] KeyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        System.out.println(SECRET_KEY);
         return Keys.hmacShaKeyFor(KeyBytes);
     }
 }

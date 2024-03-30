@@ -1,4 +1,4 @@
-package com.unleash.userservice.Model;
+package com.unleash.userservice.DTO;
 
 
 
@@ -12,13 +12,20 @@ public class AuthenticationResponse {
 
     private String role;
 
+
     public AuthenticationResponse(String token , String role) {
         this.token = token;
         this.role = role;
+
     }
+
 
     public String getToken() {
         return token;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

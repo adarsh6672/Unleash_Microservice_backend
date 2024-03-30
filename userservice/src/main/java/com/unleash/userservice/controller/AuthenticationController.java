@@ -2,19 +2,13 @@ package com.unleash.userservice.controller;
 
 
 import com.unleash.userservice.DTO.OtpDto;
-import com.unleash.userservice.DTO.UserDto;
-import com.unleash.userservice.Model.AuthenticationResponse;
 import com.unleash.userservice.Model.User;
 import com.unleash.userservice.Service.AuthenticationServiceImp;
 import com.unleash.userservice.Service.services.OtpService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
