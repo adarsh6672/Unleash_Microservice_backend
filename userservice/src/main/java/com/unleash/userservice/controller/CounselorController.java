@@ -44,10 +44,9 @@ public class CounselorController {
         return ResponseEntity.badRequest().body("file not uploaded");
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(@RequestHeader("Authorization") String headerToken){
-        System.out.println(headerToken);
-        return ResponseEntity.ok("test passed");
+    @GetMapping("/verificationstatus")
+    public ResponseEntity<?> verificationStatus(@RequestHeader("Authorization") String headerToken){
+        return counselorService.isProfileVerified(headerToken);
     }
 
     @GetMapping("/getselectiondata")

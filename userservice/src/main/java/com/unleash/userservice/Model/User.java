@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,6 +46,12 @@ public class User implements UserDetails {
 
     @Column(name = "profile_pic")
     private String profilePic;
+
+    @Column(name = "joined_on")
+    private LocalDateTime joinedOn;
+
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

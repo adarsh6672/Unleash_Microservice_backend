@@ -9,6 +9,7 @@ import com.unleash.userservice.Reposetory.*;
 import com.unleash.userservice.Service.services.CounselorService;
 import com.unleash.userservice.Service.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,8 +69,8 @@ public class CounselorServiceImp implements CounselorService {
     @Override
     public String uploadFile(String type, MultipartFile file) throws IOException {
         String fileName = file.getOriginalFilename();
-        file.transferTo(new File(PATH+type+fileName));
-        return PATH+type+fileName;
+        file.transferTo(new File(PATH+"/"+type+"/"+fileName));
+        return PATH+"/"+type+"/"+fileName;
     }
 
     @Override
@@ -107,5 +108,21 @@ public class CounselorServiceImp implements CounselorService {
         selectionResponse.setSpecializations(specializationRepository.findAll());
         return selectionResponse;
     }
+
+
+    @Override
+    public ResponseEntity<?> isProfileVerified(String token){
+        User user= userRepository.findByUsername(jwtService.extractUsername(token.substring(7))).orElseThrow();
+        CounselorData data=counselorDateRepository.findByUser(user).orElseThrow();
+        if(data.getUploadedOn()!=null){
+            if(data.isVerified()){
+                return ResponseEntity.ok().body("verified");
+            }else {
+                return ResponseEntity.ok().body("uploaded");
+            }
+        }
+        return ResponseEntity.ok().body(null);
+    }
+
 
 }

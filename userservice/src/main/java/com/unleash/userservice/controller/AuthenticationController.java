@@ -42,6 +42,9 @@ public class AuthenticationController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User request){
+        if(authService.isBlocked(request)){
+           return ResponseEntity.badRequest().body("Account is Blocked");
+        }
         return ResponseEntity.ok(authService.authenticate(request));
     }
 

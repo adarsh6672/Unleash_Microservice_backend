@@ -13,6 +13,8 @@ public interface AuthenticationService {
 
     AuthenticationResponse authenticate(User request);
 
+    boolean isBlocked(User request);
+
     boolean isEmailExisting(String email);
 
 

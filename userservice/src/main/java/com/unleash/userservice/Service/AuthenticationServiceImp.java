@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthenticationServiceImp implements AuthenticationService {
 
@@ -49,6 +51,8 @@ public class AuthenticationServiceImp implements AuthenticationService {
             user.setUsername(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(request.getRole());
+            user.setJoinedOn(LocalDateTime.now());
+            user.setBlocked(false);
             user= repository.save(user);
             if(user.getRole().equals(Role.COUNSELOR)){
                 CounselorData data= new CounselorData(user);
@@ -98,6 +102,17 @@ public class AuthenticationServiceImp implements AuthenticationService {
         }
         return response;
     }
+
+    @Override
+    public boolean isBlocked(User request){
+        User user = repository.findByEmail(request.getUsername()).orElseThrow();
+        if(user.isBlocked()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 
     @Override
     public boolean isEmailExisting(String email){

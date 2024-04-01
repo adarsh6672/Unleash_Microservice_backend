@@ -12,11 +12,11 @@ import java.util.List;
 public class VerificationDataDto {
 
     private int qualificationId ;
-    private String dob;
     private int genderId;
     private List<Integer> languages;
     private int yoe;
     private int specializationId;
+
 
 
 
