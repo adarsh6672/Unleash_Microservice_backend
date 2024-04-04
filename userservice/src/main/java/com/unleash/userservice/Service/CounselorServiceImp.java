@@ -24,7 +24,7 @@ public class CounselorServiceImp implements CounselorService {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-
+    private final CloudinaryServiceImp cloudinaryServiceImp;
     private final CounselorDateRepository counselorDateRepository;
     private final QualificationRepository qualificationRepository;
     private final LanguageRepository languageRepository;
@@ -34,9 +34,11 @@ public class CounselorServiceImp implements CounselorService {
     private final String PATH = "/home/adarsh/BROTOTYPE/Unleash_App/userservice/src/main/resources/static/CounselorDocuments";
 
     @Autowired
-    public CounselorServiceImp(JwtService jwtService, UserRepository userRepository, CounselorDateRepository counselorDateRepository, QualificationRepository qualificationRepository, LanguageRepository languageRepository, GenderRepository genderRepository, SpecializationRepository specializationRepository) {
+    public CounselorServiceImp(JwtService jwtService, UserRepository userRepository, CloudinaryServiceImp cloudinaryServiceImp, CounselorDateRepository counselorDateRepository, QualificationRepository qualificationRepository, LanguageRepository languageRepository, GenderRepository genderRepository, SpecializationRepository specializationRepository) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.cloudinaryServiceImp = cloudinaryServiceImp;
+
         this.counselorDateRepository = counselorDateRepository;
         this.qualificationRepository = qualificationRepository;
         this.languageRepository = languageRepository;
@@ -50,12 +52,12 @@ public class CounselorServiceImp implements CounselorService {
         User user = userRepository.findByUsername(userName).orElseThrow();
         CounselorData counselorData= counselorDateRepository.findByUser(user).orElseThrow();
         try {
-            String qualpath=uploadFile("qualification",qualification);
-            String expPath=uploadFile("experience",experience);
-            String photo = uploadFile("profilePhoto",profilePic);
-            counselorData.setExperienceProof(uploadFile("experience",experience));
-            counselorData.setQualificationProof(uploadFile("qualification",qualification));
-            user.setProfilePic(uploadFile("profilePhoto",profilePic));
+            String qualipath= cloudinaryServiceImp.upload(qualification);
+            String expPath=cloudinaryServiceImp.upload(experience);
+            String photo = cloudinaryServiceImp.upload(profilePic);
+            counselorData.setExperienceProof(expPath);
+            counselorData.setQualificationProof(qualipath);
+            user.setProfilePic(photo);
             counselorDateRepository.save(counselorData);
             userRepository.save(user);
             return true;

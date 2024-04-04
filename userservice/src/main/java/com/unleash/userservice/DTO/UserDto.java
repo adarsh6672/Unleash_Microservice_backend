@@ -23,6 +23,8 @@ public class UserDto {
 
     private String email;
 
+    private String profilePic;
+
     @JsonIgnore
     private String password;
 

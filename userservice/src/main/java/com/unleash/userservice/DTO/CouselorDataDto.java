@@ -54,6 +54,6 @@ public class CouselorDataDto {
 
     private LocalDateTime uploadedOn;
 
-    private byte[] profilePic;
+    private String profilePic;
 
 }
